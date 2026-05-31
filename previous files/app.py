@@ -1,9 +1,3 @@
-
-## BEFORE RUNNING THIS, ENSURE THAT THE CREDENTIALS UNDER get_connection MATCHES YOUR PASSWORD, db_name, user, host etc 
-##    /\
-##   /||\
-##    ||
-
 import os
 import random
 import string
@@ -19,7 +13,7 @@ def get_connection():
         conn = mysql.connector.connect(
             host=os.getenv("DB_HOST", "localhost"),
             user=os.getenv("DB_USER", "root"),
-            password=os.getenv("DB_PASSWORD", "1235"),
+            password=os.getenv("DB_PASSWORD", ""),
             database=os.getenv("DB_NAME", "philhealth_db")
         )
         return conn
@@ -65,9 +59,9 @@ def members():
         sql = """
             INSERT INTO members (
                 pin, member_name, date_of_birth, place_of_birth, sex, civil_status, citizenship, 
-                permanent_address, mailing_address, mobile_number, home_phone_number, business_line, 
+                permanent_address, mailing_address, mobile_number, home_phone_number, bussiness_line, 
                 email_address, profession, monthly_income, philsys_id, srrv_id, acr_id, pwd_id, 
-                mother_fullname, spouse_fullname, fk_member_type
+                mother_fullname, spouse_fullname, member_type
             ) VALUES (
                 %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
             )
@@ -103,7 +97,7 @@ def members():
         cursor.execute("SELECT * FROM members")
         members_list = cursor.fetchall()
         
-        cursor.execute("SELECT member_type FROM member_types")
+        cursor.execute("SELECT member_type FROM contribution_type")
         types = [row['member_type'] for row in cursor.fetchall()]
     except Error as e:
         flash(f"Database Error: {e}", "error")
@@ -129,7 +123,7 @@ def member_detail(pin):
         
         if action == 'DELETE':
             try:
-                cursor.execute("DELETE FROM dependents WHERE fk_pin = %s", (pin,))
+                cursor.execute("DELETE FROM dependents WHERE pin = %s", (pin,))
                 cursor.execute("DELETE FROM members WHERE pin = %s", (pin,))
                 if cursor.rowcount > 0:
                     conn.commit()
@@ -161,9 +155,9 @@ def member_detail(pin):
                 UPDATE members SET 
                     member_name=%s, date_of_birth=%s, place_of_birth=%s, sex=%s, civil_status=%s, 
                     citizenship=%s, permanent_address=%s, mailing_address=%s, mobile_number=%s, 
-                    home_phone_number=%s, business_line=%s, email_address=%s, profession=%s, 
+                    home_phone_number=%s, bussiness_line=%s, email_address=%s, profession=%s, 
                     monthly_income=%s, philsys_id=%s, srrv_id=%s, acr_id=%s, pwd_id=%s, 
-                    mother_fullname=%s, spouse_fullname=%s, fk_member_type=%s
+                    mother_fullname=%s, spouse_fullname=%s, member_type=%s
                 WHERE pin=%s
             """
             vals = (
@@ -239,7 +233,7 @@ def dependents():
             
         sql = """
             INSERT INTO dependents (dependents_full_name, relationship, dependents_date_of_birth, 
-            dependents_citizenship, dependent_has_disability, fk_pin)
+            dependents_citizenship, dependent_has_disability, pin)
             VALUES (%s, %s, %s, %s, %s, %s)
         """
         vals = (
@@ -307,7 +301,7 @@ def get_member_types():
         
     cursor = conn.cursor(dictionary=True)
     try:
-        cursor.execute("SELECT member_type, contribution_type FROM member_types")
+        cursor.execute("SELECT member_type, contribution_type FROM contribution_type")
         types = cursor.fetchall()
         return {"types": types}
     except Error as e:
