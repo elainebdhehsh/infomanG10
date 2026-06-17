@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PHILHEALTH MEMBERSHIP FORM</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="page">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="container">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="background:#EAF1FF;border:1px solid #003E7B;border-radius:12px;padding:8px 12px;display:flex;align-items:center;gap:8px;">
+            <strong style="color:#003E7B;font-size:14px;letter-spacing:0.35px;text-transform:uppercase;">Membership Form</strong>
+          </div>
+        </div>
+        <div style="color:#666;font-size:14px;">&nbsp;</div>
+      </div>
+    </div>
+
+    <!-- Banner -->
+    <div class="banner">
+      <div class="container">
+        <h1>PHILHEALTH MEMBERSHIP FORM</h1>
+      </div>
+    </div>
+
+    <!-- Main -->
+    <div class="main-wrap">
+      <div class="card">
+        <div class="card-inner" role="region" aria-label="Form container">
+
+          <!-- Left navigation -->
+          <aside class="nav" aria-label="Questions navigation">
+            <div class="section">
+              <div class="section-title">SIMPLE</div>
+              <div class="group">
+                <a href="/?report=Q1" class="{% if request.args.get('report') == 'Q1' %}active{% endif %}">Question 1</a>
+                <a href="/?report=Q2" class="{% if request.args.get('report') == 'Q2' %}active{% endif %}">Question 2</a>
+                <a href="/?report=Q3" class="{% if request.args.get('report') == 'Q3' %}active{% endif %}">Question 3</a>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="section-title">MODERATE</div>
+              <div class="group">
+                <a href="/?report=Q4" class="{% if request.args.get('report') == 'Q4' %}active{% endif %}">Question 4</a>
+                <a href="/?report=Q5" class="{% if request.args.get('report') == 'Q5' %}active{% endif %}">Question 5</a>
+                <a href="/?report=Q6" class="{% if request.args.get('report') == 'Q6' %}active{% endif %}">Question 6</a>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="section-title">DIFFICULT</div>
+              <div class="group">
+                <a href="/?report=Q7" class="{% if request.args.get('report') == 'Q7' %}active{% endif %}">Question 7</a>
+                <a href="/?report=Q8" class="{% if request.args.get('report') == 'Q8' %}active{% endif %}">Question 8</a>
+                <a href="/?report=Q9" class="{% if request.args.get('report') == 'Q9' %}active{% endif %}">Question 9</a>
+                <a href="/?report=Q10" class="{% if request.args.get('report') == 'Q10' %}active{% endif %}">Question 10</a>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Content -->
+          <section class="content" aria-live="polite">
+            <div>
+              <div class="page-title">
+                {% if report %}
+                  {{ report.title }}
+                {% else %}
+                  SQL PROBLEMS
+                {% endif %}
+              </div>
+              <div class="subtitle">
+                {% if report %}
+                  {{ report.description }}
+                {% else %}
+                  Select a question from the left to preview its report.
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Report area -->
+            <div class="report-area {% if report %}selected{% endif %}" role="region" aria-label="Report area">
+              {% if report %}
+                {% if rows and headers %}
+                  <div class="table-column">
+                    <div class="table-wrap">
+                      <table class="report-table" role="table" aria-label="Report results">
+                        <thead>
+                          <tr>
+                            {% for h in headers %}
+                              <th>{{ h }}</th>
+                            {% endfor %}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for row in rows %}
+                            <tr>
+                              {% for col in row %}
+                                <td>{{ col }}</td>
+                              {% endfor %}
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                {% else %}
+                  <div class="placeholder">No results to display for this report.</div>
+                {% endif %}
+              {% else %}
+                <div class="placeholder">Preview area — choose a question to run its report.</div>
+              {% endif %}
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-bar" role="contentinfo">
+      <div class="footer-inner">
+        <div style="display:flex;gap:12px;align-items:center;">
+          <a href="javascript:history.back()" class="btn">Back</a>
+        </div>
+        <div style="display:flex;gap:12px;">
+          <a href="javascript:history.back()" class="btn">Previous</a>
+          <a href="#" class="btn primary">Next Step</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
