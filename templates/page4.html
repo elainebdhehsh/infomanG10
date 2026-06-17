@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PhilHealth Membership Form - Dependents</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
+    <style>
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(16, 42, 67, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: #FFFFFF; width: 100%; max-width: 500px;
+            border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow: hidden; animation: fadeIn 0.2s ease-out;
+        }
+        .modal-header {
+            background: var(--brand-blue); color: #FFFFFF;
+            padding: 16px 24px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .modal-body { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+        .modal-footer {
+            padding: 16px 24px; background: #F8FAFC;
+            border-top: 1px solid #E2E8F0; display: flex; justify-content: flex-end; gap: 12px;
+        }
+        .close-modal-btn { background: none; border: none; color: #FFFFFF; font-size: 20px; cursor: pointer; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-body select {
+            width: 100%; padding: 10px 14px; border: 1px solid var(--border-gray);
+            border-radius: 4px; font-family: var(--font-primary); font-size: 13px;
+            color: var(--text-dark); background-color: #FFFFFF;
+        }
+        .modal-body select:focus { outline: none; border-color: var(--brand-blue); }
+    </style>
+</head>
+<body>
+<div class="form-layout-root">
+    
+    <nav class="top-nav">
+        <div class="nav-container">
+            <div class="brand-logo">
+                <div class="logo-placeholder">PhilHealth<span class="logo-sub">Your Partner in Health</span></div>
+            </div>
+            <div class="badge-pill">Membership Form</div>
+        </div>
+    </nav>
+
+    <main class="main-container">
+        <!-- Unified 4-Step Progress Tracker -->
+        <div class="progress-tracker">
+            <div class="step-item"><div class="step-circle">1</div><div class="step-label">Personal Details</div></div>
+            <div class="step-item"><div class="step-circle">2</div><div class="step-label">Address & Contact</div></div>
+            <div class="step-item active"><div class="step-circle">3</div><div class="step-label">Dependents</div></div>
+            <div class="step-item"><div class="step-circle">4</div><div class="step-label">Member Type</div></div>
+        </div>
+
+        <form action="{{ url_for('submit_page_4') }}" method="POST" style="display: flex; flex-direction: column; flex: 1;">
+            <div class="document-card">
+                <div class="card-header-banner">
+                    <span class="sub-heading">PHILHEALTH MEMBERSHIP FORM</span>
+                    <h2>III. DEPENDENTS</h2>
+                </div>
+
+                <div class="card-body" style="padding: 24px; gap: 0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #E2E8F0; padding-bottom: 16px;">
+                        <h3 style="font-size: 16px; font-weight: 700; color: #102A43;">Your Dependents</h3>
+                        <span id="dependent-badge" style="background: var(--brand-blue-light); color: var(--brand-blue); font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 12px;">0 Added</span>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 2fr 1fr 1.5fr 1fr 80px; gap: 16px; padding: 16px 12px; border-bottom: 1px solid #E2E8F0; font-size: 11px; font-weight: 700; color: #627D98; text-transform: uppercase; letter-spacing: 0.5px;">
+                        <div>Full Name</div><div>Relationship</div><div>Date of Birth</div><div>Citizenship</div><div style="text-align: center;">Actions</div>
+                    </div>
+
+                    <div id="dependents-list-container"></div>
+
+                    <div id="empty-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 0; gap: 12px;">
+                        <div style="width: 52px; height: 52px; background: var(--brand-blue-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--brand-blue);">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle>
+                                <line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line>
+                            </svg>
+                        </div>
+                        <h4 style="font-size: 16px; font-weight: 700; color: #102A43; margin: 4px 0 0 0;">No Dependents Registered</h4>
+                        <p style="font-size: 13px; color: #627D98; margin: 0;">Click the button below to add your qualified dependent.</p>
+                        <button type="button" class="btn btn-solid" onclick="openModal()" style="margin-top: 12px; padding: 10px 20px;">+ Add Dependent</button>
+                    </div>
+
+                    <div id="additional-add-row" style="display: none; padding: 16px 12px; border-bottom: 1px solid #E2E8F0;">
+                        <button type="button" class="btn btn-outline" onclick="openModal()" style="padding: 6px 14px; font-size: 12px;">+ Add Another Dependent</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-bar">
+                <div class="footer-container">
+                    <a href="{{ url_for('page_3') }}" class="btn btn-outline" style="text-decoration: none;">&larr; Back</a>
+                    <button type="submit" class="btn btn-solid">Next Step &rarr;</button>
+                </div>
+            </div>
+        </form>
+    </main>
+</div>
+
+<!-- Modal Container -->
+<div class="modal-backdrop" id="dependentModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 style="font-size: 16px; font-weight: 600; margin: 0;">Add New Dependent</h3>
+            <button type="button" class="close-modal-btn" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Full Name <span class="required">*</span></label>
+                <input type="text" id="modal-name" placeholder="e.g. Jane Doe Santos">
+            </div>
+            <div class="form-group">
+                <label>Relationship <span class="required">*</span></label>
+                <select id="modal-relationship">
+                    <option value="" disabled selected>Select relationship</option>
+                    <option value="Spouse">Spouse</option>
+                    <option value="Child">Child</option>
+                    <option value="Parent">Parent</option>
+                    <option value="Sibling">Sibling</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label>Date of Birth <span class="required">*</span></label>
+                    <input type="date" id="modal-dob">
+                </div>
+                <div class="form-group">
+                    <label>Citizenship <span class="required">*</span></label>
+                    <input type="text" id="modal-citizenship" value="Filipino">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
+            <button type="button" class="btn btn-solid" onclick="saveDependent()">Add Dependent</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let dependentCount = 0;
+    function openModal() {
+        document.getElementById('dependentModal').style.display = 'flex';
+        document.getElementById('modal-name').value = '';
+        document.getElementById('modal-relationship').selectedIndex = 0;
+        document.getElementById('modal-dob').value = '';
+        document.getElementById('modal-citizenship').value = 'Filipino';
+    }
+    function closeModal() { document.getElementById('dependentModal').style.display = 'none'; }
+    function formatDate(dateString) {
+        if(!dateString) return '';
+        return new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    }
+    function addDependentRow(name, relationship, dob, citizenship) {
+        dependentCount++;
+        const container = document.getElementById('dependents-list-container');
+        const rowId = `dep-row-${dependentCount}`;
+        const rowElement = document.createElement('div');
+        rowElement.id = rowId;
+        rowElement.style.cssText = "display: grid; grid-template-columns: 2fr 1fr 1.5fr 1fr 80px; gap: 16px; padding: 16px 12px; border-bottom: 1px solid #E2E8F0; align-items: center; font-size: 13px; color: #102A43;";
+
+        rowElement.innerHTML = `
+            <div>
+                <div style="font-weight: 600;">${name}</div>
+                <input type="hidden" name="dep_name[]" value="${name}">
+                <input type="hidden" name="dep_relationship[]" value="${relationship}">
+                <input type="hidden" name="dep_dob[]" value="${dob}">
+                <input type="hidden" name="dep_citizenship[]" value="${citizenship}">
+            </div>
+            <div>${relationship}</div><div>${formatDate(dob)}</div><div>${citizenship}</div>
+            <div style="display: flex; justify-content: center;">
+                <svg onclick="removeDependent('${rowId}')" style="color: #D32F2F; cursor: pointer;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+            </div>`;
+        container.appendChild(rowElement);
+    }
+    function saveDependent() {
+        const name = document.getElementById('modal-name').value.trim();
+        const relationship = document.getElementById('modal-relationship').value;
+        const dob = document.getElementById('modal-dob').value;
+        const citizenship = document.getElementById('modal-citizenship').value.trim();
+
+        if (!name || !relationship || !dob || !citizenship) {
+            alert('Please fill out all required fields.'); return;
+        }
+
+        addDependentRow(name, relationship, dob, citizenship);
+        updateUIState(); closeModal();
+    }
+    function removeDependent(id) {
+        const row = document.getElementById(id);
+        if(row) { row.remove(); dependentCount--; updateUIState(); }
+    }
+    function updateUIState() {
+        document.getElementById('dependent-badge').innerText = `${dependentCount} Added`;
+        document.getElementById('empty-state').style.display = dependentCount > 0 ? 'none' : 'flex';
+        document.getElementById('additional-add-row').style.display = dependentCount > 0 ? 'block' : 'none';
+    }
+
+    // Restore dependents previously entered in this session (e.g. after
+    // pressing Back from a later step) so they aren't lost.
+    const savedDependents = {{ data.get('dependents', []) | tojson }};
+    savedDependents.forEach(function(dep) {
+        addDependentRow(dep.name, dep.relationship, dep.dob, dep.citizenship);
+    });
+    updateUIState();
+</script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PhilHealth Membership Form - Step 2</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
+</head>
+<body>
+<div class="form-layout-root">
+    
+    <nav class="top-nav">
+        <div class="nav-container">
+            <div class="brand-logo">
+                <div class="logo-placeholder">
+                    PhilHealth
+                    <span class="logo-sub">Your Partner in Health</span>
+                </div>
+            </div>
+            <div class="badge-pill">Membership Form</div>
+        </div>
+    </nav>
+
+    <main class="main-container">
+        
+        <div class="progress-tracker">
+            <div class="step-item"><div class="step-circle">1</div><div class="step-label">Personal Details</div></div>
+            <div class="step-item active"><div class="step-circle">2</div><div class="step-label">Address & Contact</div></div>
+            <div class="step-item"><div class="step-circle">3</div><div class="step-label">Dependents</div></div>
+            <div class="step-item"><div class="step-circle">4</div><div class="step-label">Member Type</div></div>
+            <div class="step-item"><div class="step-circle">5</div><div class="step-label">Review</div></div>
+        </div>
+
+        <form action="{{ url_for('submit_page_3') }}" method="POST" style="display: flex; flex-direction: column; flex: 1;">
+            
+            <div class="document-card">
+                <div class="card-header-banner">
+                    <span class="sub-heading">PHILHEALTH MEMBERSHIP FORM</span>
+                    <h2>II. ADDRESS & CONTACT DETAILS</h2>
+                </div>
+
+                <div class="card-body">
+                    
+                    <div>
+                        <div class="section-divider-title">📍 Permanent Home Address</div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 16px;">
+                            <div class="form-grid-2">
+                                <div class="form-group">
+                                    <label>Unit/Room No./Floor, Building Name</label>
+                                    <input type="text" name="perm_unit" value="{{ data.get('perm_unit', '') }}" placeholder="e.g. Unit 10A, Tower B">
+                                </div>
+                                <div class="form-group">
+                                    <label>Lot/Block/Phase/House Number</label>
+                                    <input type="text" name="perm_lot" value="{{ data.get('perm_lot', '') }}" placeholder="e.g. Lot 1 Block 2">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Street Name</label>
+                                <input type="text" name="perm_street" value="{{ data.get('perm_street', '') }}" placeholder="e.g. Mabini Street">
+                            </div>
+                            
+                            <div class="form-grid-2">
+                                <div class="form-group">
+                                    <label>Subdivision</label>
+                                    <input type="text" name="perm_subdivision" value="{{ data.get('perm_subdivision', '') }}" placeholder="Optional">
+                                </div>
+                                <div class="form-group">
+                                    <label>Barangay <span class="required">*</span></label>
+                                    <input type="text" name="perm_barangay" value="{{ data.get('perm_barangay', '') }}" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-grid-2">
+                                <div class="form-group">
+                                    <label>Municipality/City <span class="required">*</span></label>
+                                    <input type="text" name="perm_city" value="{{ data.get('perm_city', '') }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Province/State/Country <span class="required">*</span></label>
+                                    <input type="text" name="perm_province" value="{{ data.get('perm_province', '') }}" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-grid-2">
+                                <div class="form-group">
+                                    <label>ZIP Code <span class="required">*</span></label>
+                                    <input type="text" name="perm_zip" value="{{ data.get('perm_zip', '') }}" required>
+                                </div>
+                                <div></div> </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #D9E2EC; padding-bottom: 6px;">
+                            <div style="font-size: 13px; font-weight: 800; color: #102A43; letter-spacing: 0.5px;">✉ Mailing Address</div>
+                            <label class="checkbox-container">
+                                <input type="checkbox" name="same_as_perm" id="same_as_perm" {% if data.get('same_as_perm') %}checked{% endif %}>
+                                Same as Permanent Address
+                            </label>
+                        </div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 16px;">
+                            <div class="form-grid-2">
+                                <div class="form-group">
+                                    <label>Unit/Room No./Floor, Building Name</label>
+                                    <input type="text" name="mail_unit" value="{{ data.get('mail_unit', '') }}" placeholder="e.g. Unit 10A, Tower B">
+                                </div>
+                                <div class="form-group">
+                                    <label>Lot/Block/Phase/House Number</label>
+                                    <input type="text" name="mail_lot" value="{{ data.get('mail_lot', '') }}" placeholder="e.g. Lot 1 Block 2">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Street Name</label>
+                                <input type="text" name="mail_street" value="{{ data.get('mail_street', '') }}" placeholder="e.g. Mabini Street">
+                            </div>
+                            
+                            <div class="form-grid-2">
+                                <div class="form-group">
+                                    <label>Subdivision</label>
+                                    <input type="text" name="mail_subdivision" value="{{ data.get('mail_subdivision', '') }}" placeholder="Optional">
+                                </div>
+                                <div class="form-group">
+                                    <label>Barangay</label>
+                                    <input type="text" name="mail_barangay" value="{{ data.get('mail_barangay', '') }}">
+                                </div>
+                            </div>
+                            
+                            <div class="form-grid-2">
+                                <div class="form-group">
+                                    <label>Municipality/City</label>
+                                    <input type="text" name="mail_city" value="{{ data.get('mail_city', '') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Province/State/Country</label>
+                                    <input type="text" name="mail_province" value="{{ data.get('mail_province', '') }}">
+                                </div>
+                            </div>
+                            
+                            <div class="form-grid-2">
+                                <div class="form-group">
+                                    <label>ZIP Code</label>
+                                    <input type="text" name="mail_zip" value="{{ data.get('mail_zip', '') }}">
+                                </div>
+                                <div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 10px;">
+                        <div class="section-divider-title">📇 Contact Information</div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 16px;">
+                            <div class="form-grid-2">
+                                <div class="form-group">
+                                    <label>Mobile Number (Required) <span class="required">*</span></label>
+                                    <input type="text" name="mobile" value="{{ data.get('mobile', '') }}" placeholder="+63 912 345 6789" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>E-mail Address (Required for OFW)</label>
+                                    <input type="text" name="email" value="{{ data.get('email', '') }}" placeholder="juan@example.com">
+                                </div>
+                            </div>
+                            
+                            <div class="form-grid-2">
+                                <div class="form-group">
+                                    <label>Home Phone Number</label>
+                                    <input type="text" name="home_phone" value="{{ data.get('home_phone', '') }}" placeholder="Area Code + Number">
+                                </div>
+                                <div class="form-group">
+                                    <label>Business (Direct Line)</label>
+                                    <input type="text" name="business_phone" value="{{ data.get('business_phone', '') }}" placeholder="(Area Code) + Phone Number">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="action-bar">
+                <div class="footer-container">
+                    <a href="{{ url_for('page_2') }}" class="btn btn-outline" style="text-decoration: none;">Back</a>
+                    <button type="submit" class="btn btn-solid">Next Step</button>
+                </div>
+            </div>
+            
+        </form>
+    </main>
+</div>
+</body>
+</html>

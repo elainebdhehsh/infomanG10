@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhilHealth Membership Form - Step 2</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <form action="{{ url_for('submit_page_2') }}" method="POST" class="form-layout-root">
+        
+        <header class="top-nav">
+            <div class="nav-container">
+                <div class="logo-placeholder">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/PhilHealth_logo.svg" alt="PhilHealth Logo" class="brand-logo" onerror="this.style.display='none';">
+                </div>
+                <div class="badge-pill">MEMBERSHIP FORM</div>
+            </div>
+        </header>
+
+        <section class="green-banner-strip">
+            <div class="strip-container">PhilHealth Membership Form</div>
+        </section>
+
+        <main class="main-container">
+            
+            <div class="progress-tracker">
+                <div class="step-item active">
+                    <div class="step-circle">1</div>
+                    <div class="step-label">Personal Details</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-circle">2</div>
+                    <div class="step-label">Address & Contact</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">Dependents</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-circle">4</div>
+                    <div class="step-label">Member Type</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-circle">5</div>
+                    <div class="step-label">Review</div>
+                </div>
+            </div>
+
+            <div class="document-card">
+                
+                <div class="card-header-banner">
+                    <span class="sub-heading">PHILHEALTH MEMBERSHIP FORM</span>
+                    <h2>I. PERSONAL DETAILS</h2>
+                </div>
+
+                <div class="card-body">
+                    
+                    <div class="notice-callout">
+                        <p>Please ensure all names and details are written in <strong>UPPER CASE / CAPITAL LETTERS</strong>. For any fields that do not apply to you, please enter <strong>"N/A"</strong>.</p>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>LAST NAME <span class="required">*</span></label>
+                            <input type="text" name="last_name" value="{{ data.get('last_name', '') }}" placeholder="E.G. DELA CRUZ" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label>FIRST NAME <span class="required">*</span></label>
+                            <input type="text" name="first_name" value="{{ data.get('first_name', '') }}" placeholder="E.G. JUAN ANDRES" required autocomplete="off">
+                        </div>
+                    </div>
+
+                    <div class="form-grid-mixed-row">
+                        <div class="form-group size-small">
+                            <label>NAME EXT. <span class="sub-label">(Jr./Sr./III)</span></label>
+                            <input type="text" name="suffix" value="{{ data.get('suffix', '') }}" placeholder="---" autocomplete="off">
+                        </div>
+                        <div class="form-group size-large">
+                            <label>MIDDLE NAME</label>
+                            <input type="text" name="middle_name" value="{{ data.get('middle_name', '') }}" placeholder="E.G. SANTOS" autocomplete="off">
+                        </div>
+                        <div class="form-group explicit-checkboxes">
+                            <label class="checkbox-container">
+                                <input type="checkbox" name="no_middle_name" {% if data.get('no_middle_name') %}checked{% endif %}>
+                                <span class="checkmark"></span> No Middle Name
+                            </label>
+                            <label class="checkbox-container">
+                                <input type="checkbox" name="no_extension" {% if data.get('no_extension') %}checked{% endif %}>
+                                <span class="checkmark"></span> No Extension
+                            </label>
+                            <label class="checkbox-container">
+                                <input type="checkbox" name="mononym" {% if data.get('mononym') %}checked{% endif %}>
+                                <span class="checkmark"></span> Mononym
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>DATE OF BIRTH <span class="required">*</span></label>
+                            <input type="date" name="dob" value="{{ data.get('dob', '') }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>PLACE OF BIRTH <span class="required">*</span></label>
+                            <input type="text" name="place_of_birth" value="{{ data.get('place_of_birth', '') }}" placeholder="CITY/MUNICIPALITY, PROVINCE" required autocomplete="off">
+                        </div>
+                    </div>
+
+                    <div class="section-divider-title">MOTHER'S MAIDEN NAME</div>
+                    
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>LAST NAME</label>
+                            <input type="text" name="mother_last_name" value="{{ data.get('mother_last_name', '') }}" placeholder="MOTHER'S LAST NAME" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label>FIRST NAME</label>
+                            <input type="text" name="mother_first_name" value="{{ data.get('mother_first_name', '') }}" placeholder="MOTHER'S FIRST NAME" autocomplete="off">
+                        </div>
+                    </div>
+
+                    <div class="section-divider-title">SPOUSE <span class="sub-label">(IF MARRIED)</span></div>
+                    
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>LAST NAME</label>
+                            <input type="text" name="spouse_last_name" value="{{ data.get('spouse_last_name', '') }}" placeholder="SPOUSE'S LAST NAME" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label>FIRST NAME</label>
+                            <input type="text" name="spouse_first_name" value="{{ data.get('spouse_first_name', '') }}" placeholder="SPOUSE'S FIRST NAME" autocomplete="off">
+                        </div>
+                    </div>
+
+                    <div class="form-matrix-radios">
+                        
+                        <div class="matrix-column">
+                            <label class="matrix-main-label">SEX <span class="required">*</span></label>
+                            <div class="radio-vertical-stack">
+                                <label class="radio-option-item">
+                                    <input type="radio" name="sex" value="Male" required {% if data.get('sex') == 'Male' %}checked{% endif %}>
+                                    <span class="radio-dot"></span> Male
+                                </label>
+                                <label class="radio-option-item">
+                                    <input type="radio" name="sex" value="Female" {% if data.get('sex') == 'Female' %}checked{% endif %}>
+                                    <span class="radio-dot"></span> Female
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="matrix-column span-two-columns">
+                            <label class="matrix-main-label">CIVIL STATUS <span class="required">*</span></label>
+                            <div class="radio-matrix-grid">
+                                <label class="radio-option-item"><input type="radio" name="civil_status" value="Single" required {% if data.get('civil_status') == 'Single' %}checked{% endif %}><span class="radio-dot"></span> Single</label>
+                                <label class="radio-option-item"><input type="radio" name="civil_status" value="Annulled" {% if data.get('civil_status') == 'Annulled' %}checked{% endif %}><span class="radio-dot"></span> Annulled</label>
+                                <label class="radio-option-item"><input type="radio" name="civil_status" value="Married" {% if data.get('civil_status') == 'Married' %}checked{% endif %}><span class="radio-dot"></span> Married</label>
+                                <label class="radio-option-item"><input type="radio" name="civil_status" value="Widow/er" {% if data.get('civil_status') == 'Widow/er' %}checked{% endif %}><span class="radio-dot"></span> Widow/er</label>
+                                <label class="radio-option-item"><input type="radio" name="civil_status" value="Legally Separated" {% if data.get('civil_status') == 'Legally Separated' %}checked{% endif %}><span class="radio-dot"></span> Legally Separated</label>
+                            </div>
+                        </div>
+
+                        <div class="matrix-column span-all-remaining">
+                            <label class="matrix-main-label">CITIZENSHIP <span class="required">*</span></label>
+                            <div class="radio-horizontal-row">
+                                <label class="radio-option-item"><input type="radio" name="citizenship" value="Filipino" required {% if data.get('citizenship') == 'Filipino' %}checked{% endif %}><span class="radio-dot"></span> FILIPINO</label>
+                                <label class="radio-option-item"><input type="radio" name="citizenship" value="Dual Citizen" {% if data.get('citizenship') == 'Dual Citizen' %}checked{% endif %}><span class="radio-dot"></span> DUAL CITIZEN</label>
+                                <label class="radio-option-item"><input type="radio" name="citizenship" value="Foreign National" {% if data.get('citizenship') == 'Foreign National' %}checked{% endif %}><span class="radio-dot"></span> FOREIGN NATIONAL</label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </main>
+
+        <footer class="action-bar">
+            <div class="footer-container">
+                <a href="{{ url_for('index') }}" class="btn btn-outline" style="text-decoration: none;">
+                    ← Back
+                </a>
+                <button type="submit" class="btn btn-solid">
+                    Next Step →
+                </button>
+            </div>
+        </footer>
+
+    </form>
+
+</body>
+</html>

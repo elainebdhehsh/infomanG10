@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhilHealth - Read a Selected Record</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ── Page-specific styles ── */
+        .records-layout {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .records-main {
+            flex: 1;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 36px 24px 80px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--brand-blue);
+            text-transform: uppercase;
+            margin-bottom: 28px;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── Table Card ── */
+        .table-card {
+            background: #FFFFFF;
+            border-radius: 10px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+            padding: 28px 28px 36px;
+        }
+
+        /* ── Toolbar (search + add) ── */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 16px;
+        }
+
+        .search-wrap {
+            position: relative;
+            flex: 0 0 300px;
+        }
+
+        .search-wrap svg {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9CA3AF;
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 9px 12px 9px 34px;
+            border: 1px solid var(--border-gray);
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: var(--font-primary);
+            color: var(--text-dark);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus { border-color: var(--brand-blue); }
+
+        .btn-add {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 18px;
+            background: #74B72E;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: var(--font-primary);
+            cursor: pointer;
+            text-decoration: none;
+            transition: opacity 0.15s;
+            white-space: nowrap;
+        }
+        .btn-add:hover { opacity: 0.88; }
+
+        /* ── Table ── */
+        .records-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .records-table thead tr {
+            border-bottom: 2px solid #E5E7EB;
+        }
+
+        .records-table th {
+            text-align: left;
+            padding: 10px 14px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .records-table th:first-child { width: 48px; text-align: center; }
+        .records-table th:last-child  { width: 80px; text-align: center; }
+
+        .records-table tbody tr {
+            border-bottom: 1px solid #F3F4F6;
+            transition: background 0.12s;
+        }
+
+        .records-table tbody tr:hover { background: #F8FAFF; }
+
+        .records-table td {
+            padding: 12px 14px;
+            color: var(--text-muted);
+        }
+
+        .records-table td:first-child { text-align: center; color: #9CA3AF; font-size: 13px; }
+        .records-table td:last-child  { text-align: center; }
+
+        .no-records {
+            text-align: center;
+            padding: 48px 0;
+            color: #9CA3AF;
+            font-size: 15px;
+        }
+
+        /* ── Action icons ── */
+        .action-btns { display: flex; gap: 10px; justify-content: center; }
+
+        .btn-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: background 0.15s;
+            line-height: 0;
+        }
+        .btn-icon:hover { background: #F3F4F6; }
+        .btn-icon.view svg { color: #4B5563; }
+        .btn-icon.edit svg  { color: #003E7B; }
+        .btn-icon.delete svg { color: #EF4444; }
+
+        /* ── Flash / alert ── */
+        .flash-msg {
+            padding: 12px 18px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .flash-msg.success { background: #DCFCE7; color: #166534; border: 1px solid #86EFAC; }
+        .flash-msg.error   { background: #FEE2E2; color: #B91C1C; border: 1px solid #FCA5A5; }
+
+        /* ── Footer action bar ── */
+        .action-bar {
+            background: #EFF4FF;
+            border-top: 1px solid var(--border-gray);
+            padding: 14px 24px;
+            position: sticky;
+            bottom: 0;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn-edit-footer {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 40px;
+            background: var(--brand-blue);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: var(--font-primary);
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.15s;
+        }
+        .btn-edit-footer:hover { background: var(--brand-blue-hover); }
+
+        /* ── Delete confirm modal ── */
+        .modal-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.open { display: flex; }
+
+        .modal-box {
+            background: #fff;
+            border-radius: 10px;
+            padding: 32px 28px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        }
+
+        .modal-box h3 { font-size: 18px; color: var(--text-dark); margin-bottom: 10px; }
+        .modal-box p  { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
+
+        .modal-actions { display: flex; gap: 12px; justify-content: center; }
+
+        .btn-cancel {
+            padding: 10px 24px;
+            border: 1px solid var(--border-gray);
+            background: #fff;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: var(--font-primary);
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+
+        .btn-confirm-delete {
+            padding: 10px 24px;
+            background: #EF4444;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: var(--font-primary);
+            cursor: pointer;
+        }
+
+        /* highlight selected row */
+        .records-table tbody tr.row-selected { background: #EAF1FF; }
+
+        /* View mode styles */
+        .view-banner {
+            margin-bottom: 20px;
+            padding: 12px 18px;
+            background: #EAF1FF;
+            border: 1px solid #003E7B;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .view-banner a { color: #003E7B; font-weight: 600; text-decoration: none; }
+        .view-banner a:hover { text-decoration: underline; }
+        
+        .dependents-section {
+            margin-top: 30px;
+            border-top: 2px solid #E5E7EB;
+            padding-top: 20px;
+        }
+        .dependents-section h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--brand-blue);
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="records-layout">
+
+    <!-- TOP NAV -->
+    <header class="top-nav">
+        <div class="nav-container">
+            <div class="logo-placeholder">
+                <span class="logo-bold">PhilHealth</span>
+                <span class="logo-sub">Your Partner in Health</span>
+            </div>
+            <div class="badge">Membership Form</div>
+        </div>
+    </header>
+
+    <!-- GREEN BANNER -->
+    <section class="green-banner">
+        <h1>PhilHealth Membership Form</h1>
+    </section>
+
+    <!-- MAIN -->
+    <main class="records-main">
+        <h2 class="page-title">{% if view_mode %}View Record{% else %}Read a Selected Record{% endif %}</h2>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-msg {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="table-card">
+            <!-- Toolbar -->
+            <div class="toolbar">
+                <div class="search-wrap">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                    <input class="search-input" id="searchInput" type="text" placeholder="Search..." oninput="filterTable()" />
+                </div>
+                <a href="{{ url_for('index') }}" class="btn-add">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Add Member
+                </a>
+            </div>
+
+            <!-- View Mode Banner (only shows when viewing a single record) -->
+            {% if view_mode %}
+            <div class="view-banner">
+                <span><strong>Viewing Record:</strong> {{ members[0].member_name }} (PIN: {{ members[0].pin }})</span>
+                <a href="{{ url_for('records') }}">← Back to All Records</a>
+            </div>
+            {% endif %}
+
+            <!-- Table -->
+            <table class="records-table" id="recordsTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>PIN</th>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Birthdate</th>
+                        <th>Sex</th>
+                        <th>Civil Status</th>
+                        <th>Citizenship</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    {% if members %}
+                        {% for m in members %}
+                        <tr class="data-row" data-pin="{{ m.pin }}" onclick="selectRow(this)" style="cursor:pointer;">
+                            <td>{{ loop.index }}</td>
+                            <td>{{ m.pin }}</td>
+                            <td>{{ m.member_name }}</td>
+                            <td>{{ m.permanent_address }}</td>
+                            <td>{{ m.date_of_birth.strftime('%m/%d/%Y') if m.date_of_birth else 'N/A' }}</td>
+                            <td>{{ 'Male' if m.sex == 'M' else 'Female' }}</td>
+                            <td>{{ m.civil_status }}</td>
+                            <td>{{ m.citizenship | title }}</td>
+                            <td>
+                                <div class="action-btns">
+                                    <!-- View button -->
+                                    <a href="{{ url_for('view_record', pin=m.pin) }}" class="btn-icon view" title="View">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                            <circle cx="12" cy="12" r="3"/>
+                                        </svg>
+                                    </a>
+                                    <!-- Edit button -->
+                                    <a href="{{ url_for('edit_record', pin=m.pin) }}" class="btn-icon edit" title="Edit">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/>
+                                        </svg>
+                                    </a>
+                                    <!-- Delete button -->
+                                    <button class="btn-icon delete" title="Delete" onclick="confirmDelete(event, '{{ m.pin }}', '{{ m.member_name }}')">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="3 6 5 6 21 6"/>
+                                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                                            <path d="M10 11v6M14 11v6"/>
+                                            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr><td colspan="9" class="no-records">No member records found in the database.</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+
+            <!-- Dependents section for view mode -->
+            {% if view_mode and dependents %}
+            <div class="dependents-section">
+                <h3>Dependents</h3>
+                <table class="records-table">
+                    <thead>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Relationship</th>
+                            <th>Date of Birth</th>
+                            <th>Citizenship</th>
+                            <th>Disability</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for dep in dependents %}
+                        <tr>
+                            <td>{{ dep.dependents_full_name }}</td>
+                            <td>{{ dep.relationship }}</td>
+                            <td>{{ dep.dependents_date_of_birth.strftime('%m/%d/%Y') if dep.dependents_date_of_birth else 'N/A' }}</td>
+                            <td>{{ dep.dependents_citizenship }}</td>
+                            <td>{{ 'Yes' if dep.dependent_has_disability else 'No' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <!-- FOOTER ACTION BAR -->
+    <footer class="action-bar">
+        <div class="footer-inner">
+            <a href="#" id="editSelectedBtn" class="btn-edit-footer" onclick="goToEdit(event)">
+                EDIT &nbsp;→
+            </a>
+        </div>
+    </footer>
+</div>
+
+<!-- DELETE CONFIRM MODAL -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal-box">
+        <h3>Delete Record</h3>
+        <p id="deleteModalMsg">Are you sure you want to delete this member? This action cannot be undone.</p>
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+            <form id="deleteForm" method="POST" action="">
+                <button type="submit" class="btn-confirm-delete">Yes, Delete</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    let selectedPin = null;
+
+    // Row selection
+    function selectRow(row) {
+        document.querySelectorAll('.data-row').forEach(r => r.classList.remove('row-selected'));
+        row.classList.add('row-selected');
+        selectedPin = row.dataset.pin;
+    }
+
+    // Footer EDIT button — goes to edit page for selected row
+    function goToEdit(e) {
+        e.preventDefault();
+        if (!selectedPin) {
+            alert('Please select a record row first before clicking Edit.');
+            return;
+        }
+        window.location.href = '/edit/' + selectedPin;
+    }
+
+    // Delete modal
+    function confirmDelete(e, pin, name) {
+        e.stopPropagation(); // don't trigger row select
+        document.getElementById('deleteModalMsg').textContent =
+            `Are you sure you want to delete the record for "${name}" (PIN: ${pin})? This action cannot be undone.`;
+        document.getElementById('deleteForm').action = '/delete/' + pin;
+        document.getElementById('deleteModal').classList.add('open');
+    }
+
+    function closeModal() {
+        document.getElementById('deleteModal').classList.remove('open');
+    }
+
+    // Close modal on overlay click
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+
+    // Live search filter
+    function filterTable() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        document.querySelectorAll('#tableBody .data-row').forEach(row => {
+            const text = row.innerText.toLowerCase();
+            row.style.display = text.includes(query) ? '' : 'none';
+        });
+        // Re-number visible rows
+        let i = 1;
+        document.querySelectorAll('#tableBody .data-row').forEach(row => {
+            if (row.style.display !== 'none') {
+                row.cells[0].textContent = i++;
+            }
+        });
+    }
+</script>
+</body>
+</html>

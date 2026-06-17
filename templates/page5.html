@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PhilHealth Membership Form - Member Type</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
+    <style>
+        .member-type-container { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 12px; }
+        .contributor-column { display: flex; flex-direction: column; gap: 12px; }
+        .column-title {
+            font-size: 14px; font-weight: 700; color: var(--brand-blue);
+            border-bottom: 2px solid var(--brand-blue); padding-bottom: 6px; margin-bottom: 8px; text-transform: uppercase;
+        }
+        .option-grid-box { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .checkbox-card {
+            background: #FFFFFF; border: 1px solid var(--border-blueprint); border-radius: 6px;
+            padding: 10px 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; min-height: 44px;
+        }
+        .checkbox-card:hover { background: #F4F8FF; }
+        .checkbox-card input[type="radio"] { accent-color: var(--brand-blue); width: 16px; height: 16px; flex-shrink: 0; }
+        .card-text { font-size: 11px; font-weight: 600; color: #334E68; line-height: 1.3; }
+        .full-width-row { grid-column: span 2; }
+        .nested-sub-fields { padding-left: 24px; display: flex; gap: 16px; margin-top: -4px; }
+        .inline-input-group { display: flex; align-items: center; gap: 8px; width: 100%; margin-top: 4px; }
+        .inline-input-group label { font-size: 10px; font-weight: 700; color: #486581; white-space: nowrap; }
+        .inline-input-group input[type="text"] { background: #EFF4FF; border: 1px solid var(--border-blueprint); border-radius: 4px; height: 28px; padding: 0 8px; font-size: 11px; width: 100%; }
+        .philhealth-use-section { background: #F0F4F8; border: 1px solid #D9E2EC; border-radius: 6px; padding: 14px; margin-top: 20px; }
+        .use-title { font-size: 10px; font-weight: 800; color: #627D98; margin-bottom: 10px; }
+        @media (max-width: 768px) { .member-type-container { grid-template-columns: 1fr; } .option-grid-box { grid-template-columns: 1fr; } .full-width-row { grid-column: auto; } }
+    </style>
+</head>
+<body>
+<div class="form-layout-root">
+    
+    <nav class="top-nav">
+        <div class="nav-container">
+            <div class="brand-logo">
+                <div class="logo-placeholder">PhilHealth<span class="logo-sub">Your Partner in Health</span></div>
+            </div>
+            <div class="badge-pill">Membership Form</div>
+        </div>
+    </nav>
+
+    <main class="main-container">
+        <div class="progress-tracker">
+            <div class="step-item"><div class="step-circle">1</div><div class="step-label">Personal Details</div></div>
+            <div class="step-item"><div class="step-circle">2</div><div class="step-label">Address & Contact</div></div>
+            <div class="step-item"><div class="step-circle">3</div><div class="step-label">Dependents</div></div>
+            <div class="step-item active"><div class="step-circle">4</div><div class="step-label">Member Type</div></div>
+        </div>
+
+        <form action="{{ url_for('submit_page_5') }}" method="POST" style="display: flex; flex-direction: column; flex: 1;">
+            <div class="document-card">
+                <div class="card-header-banner">
+                    <span class="sub-heading">PHILHEALTH MEMBERSHIP FORM</span>
+                    <h2>IV. MEMBER TYPE</h2>
+                </div>
+
+                <div class="card-body">
+                    <div class="notice-callout">
+                        <p><strong>Important Instruction:</strong> Please select ONLY ONE option that best reflects your current status in either the Direct or Indirect Contributor categories.</p>
+                    </div>
+
+                    <div class="member-type-container">
+                        <!-- Direct Contributors column based on image_454d89.jpg layout -->
+                        <div class="contributor-column">
+                            <div class="column-title">Direct Contributor</div>
+                            <div class="option-grid-box">
+                                <label class="checkbox-card"><input type="radio" name="member_type_status" value="Employed Private" {% if data.get('member_type_status') == 'Employed Private' %}checked{% endif %}><span class="card-text">Employed Private</span></label>
+                                <label class="checkbox-card"><input type="radio" name="member_type_status" value="Employed Government" {% if data.get('member_type_status') == 'Employed Government' %}checked{% endif %}><span class="card-text">Employed Government</span></label>
+                                <label class="checkbox-card"><input type="radio" name="member_type_status" value="Professional Practitioner" {% if data.get('member_type_status') == 'Professional Practitioner' %}checked{% endif %}><span class="card-text">Professional Practitioner</span></label>
+                                <label class="checkbox-card"><input type="radio" name="member_type_status" value="Kasambahay" {% if data.get('member_type_status') == 'Kasambahay' %}checked{% endif %}><span class="card-text">Kasambahay</span></label>
+                                <label class="checkbox-card"><input type="radio" name="member_type_status" value="Family Driver" {% if data.get('member_type_status') == 'Family Driver' %}checked{% endif %}><span class="card-text">Family Driver</span></label>
+                                <label class="checkbox-card"><input type="radio" name="member_type_status" value="Lifetime Member" {% if data.get('member_type_status') == 'Lifetime Member' %}checked{% endif %}><span class="card-text">Lifetime Member</span></label>
+                                <label class="checkbox-card full-width-row"><input type="radio" name="member_type_status" value="Dual Citizenship / Living Abroad" {% if data.get('member_type_status') == 'Dual Citizenship / Living Abroad' %}checked{% endif %}><span class="card-text">Filipinos with Dual Citizenship / Living Abroad</span></label>
+                                <label class="checkbox-card full-width-row"><input type="radio" name="member_type_status" value="Self-Earning Individual" {% if data.get('member_type_status') == 'Self-Earning Individual' %}checked{% endif %}><span class="card-text">Self-Earning Individual</span></label>
+                                <label class="checkbox-card"><input type="radio" name="member_type_status" value="Individual" {% if data.get('member_type_status') == 'Individual' %}checked{% endif %}><span class="card-text">Individual</span></label>
+                                <label class="checkbox-card"><input type="radio" name="member_type_status" value="Sole Proprietor" {% if data.get('member_type_status') == 'Sole Proprietor' %}checked{% endif %}><span class="card-text">Sole Proprietor</span></label>
+                                <label class="checkbox-card full-width-row"><input type="radio" name="member_type_status" value="Group Enrollment Scheme" {% if data.get('member_type_status') == 'Group Enrollment Scheme' %}checked{% endif %}><span class="card-text">Group Enrollment Scheme</span></label>
+                                
+                                <div class="checkbox-card full-width-row" style="flex-direction: column; align-items: flex-start; height: auto; gap: 6px;">
+                                    <label style="display: flex; align-items: center; gap: 10px; width: 100%; cursor: pointer;">
+                                        <input type="radio" name="member_type_status" value="Migrant Worker" {% if data.get('member_type_status') == 'Migrant Worker' %}checked{% endif %}><span class="card-text">Migrant Worker</span>
+                                    </label>
+                                    <div class="nested-sub-fields">
+                                        <label style="font-size: 11px;"><input type="checkbox" name="migrant_type" value="Land-Based" {% if 'Land-Based' in data.get('migrant_type_list', []) %}checked{% endif %}> Land-Based</label>
+                                        <label style="font-size: 11px;"><input type="checkbox" name="migrant_type" value="Sea-Based" {% if 'Sea-Based' in data.get('migrant_type_list', []) %}checked{% endif %}> Sea-Based</label>
+                                    </div>
+                                </div>
+                                <label class="checkbox-card full-width-row"><input type="radio" name="member_type_status" value="Foreign National" {% if data.get('member_type_status') == 'Foreign National' %}checked{% endif %}><span class="card-text">Foreign National</span></label>
+                            </div>
+
+                            <div class="inline-input-group" style="margin-top: 8px;"><label>PRA SRRV No.</label><input type="text" name="pra_srrv_no" value="{{ data.get('pra_srrv_no', '') }}"></div>
+                            <div class="inline-input-group"><label>ACR I-Card No.</label><input type="text" name="acr_icard_no" value="{{ data.get('acr_icard_no', '') }}"></div>
+
+                            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 12px; margin-top: 14px; background: #F8FAFC; padding: 12px; border-radius: 6px; border: 1px dashed var(--border-blueprint);">
+                                <div class="form-group"><label style="font-size: 10px;">Profession</label><input type="text" name="direct_profession" value="{{ data.get('direct_profession', '') }}" style="height: 32px;"></div>
+                                <div class="form-group"><label style="font-size: 10px;">Monthly Income</label><input type="text" name="direct_monthly_income" value="{{ data.get('direct_monthly_income', '') }}" style="height: 32px;"></div>
+                                <div class="form-group" style="grid-column: span 2;"><label style="font-size: 10px;">Proof of Income</label><input type="text" name="direct_proof_income" value="{{ data.get('direct_proof_income', '') }}" style="height: 32px;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Indirect Contributors column based on image_454d89.jpg layout -->
+                        <div class="contributor-column">
+                            <div class="column-title">Indirect Contributor</div>
+                            <div class="option-grid-box">
+                                <label class="checkbox-card"><input type="radio" name="member_type_status" value="Listahanan" {% if data.get('member_type_status') == 'Listahanan' %}checked{% endif %}><span class="card-text">Listahanan</span></label>
+                                <label class="checkbox-card"><input type="radio" name="member_type_status" value="LGU-sponsored" {% if data.get('member_type_status') == 'LGU-sponsored' %}checked{% endif %}><span class="card-text">LGU-sponsored</span></label>
+                                <label class="checkbox-card"><input type="radio" name="member_type_status" value="4Ps / MCCT" {% if data.get('member_type_status') == '4Ps / MCCT' %}checked{% endif %}><span class="card-text">4Ps / MCCT</span></label>
+                                <label class="checkbox-card"><input type="radio" name="member_type_status" value="NGA-sponsored" {% if data.get('member_type_status') == 'NGA-sponsored' %}checked{% endif %}><span class="card-text">NGA-sponsored</span></label>
+                                <label class="checkbox-card"><input type="radio" name="member_type_status" value="Senior Citizen" {% if data.get('member_type_status') == 'Senior Citizen' %}checked{% endif %}><span class="card-text">Senior Citizen</span></label>
+                                <label class="checkbox-card"><input type="radio" name="member_type_status" value="Private-sponsored" {% if data.get('member_type_status') == 'Private-sponsored' %}checked{% endif %}><span class="card-text">Private-sponsored</span></label>
+                                <label class="checkbox-card"><input type="radio" name="member_type_status" value="PAMANA" {% if data.get('member_type_status') == 'PAMANA' %}checked{% endif %}><span class="card-text">PAMANA</span></label>
+                                <label class="checkbox-card"><input type="radio" name="member_type_status" value="KIA / KIPO" {% if data.get('member_type_status') == 'KIA / KIPO' %}checked{% endif %}><span class="card-text">KIA / KIPO</span></label>
+                                <label class="checkbox-card full-width-row"><input type="radio" name="member_type_status" value="Bangsamoro" {% if data.get('member_type_status') == 'Bangsamoro' %}checked{% endif %}><span class="card-text">Bangsamoro</span></label>
+                                
+                                <div class="checkbox-card full-width-row" style="flex-direction: column; align-items: flex-start; height: auto; gap: 4px;">
+                                    <label style="display: flex; align-items: center; gap: 10px; width: 100%; cursor: pointer;">
+                                        <input type="radio" name="member_type_status" value="Person with Disability" {% if data.get('member_type_status') == 'Person with Disability' %}checked{% endif %}><span class="card-text">Person with Disability (PWD)</span>
+                                    </label>
+                                    <div class="inline-input-group" style="padding-left: 24px;"><label style="font-size: 9px;">PWD ID No.</label><input type="text" name="pwd_id_no" value="{{ data.get('pwd_id_no', '') }}" style="height: 24px;"></div>
+                                </div>
+                            </div>
+
+                            <div class="philhealth-use-section">
+                                <div class="use-title">FOR PHILHEALTH USE ONLY:</div>
+                                <div class="contributor-column" style="gap: 8px;">
+                                    <label class="checkbox-card" style="background: #E4E9F0; border-color: #CBD5E1; cursor: not-allowed; opacity: 0.7;"><input type="checkbox" disabled><span class="card-text" style="color: #627D98;">Point of Service (POS) Financially Incapable</span></label>
+                                    <label class="checkbox-card" style="background: #E4E9F0; border-color: #CBD5E1; cursor: not-allowed; opacity: 0.7;"><input type="checkbox" disabled><span class="card-text" style="color: #627D98;">Financially Incapable</span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-bar">
+                <div class="footer-container">
+                    <a href="{{ url_for('page_4') }}" class="btn btn-outline" style="text-decoration: none;">&larr; Back</a>
+                    <button type="submit" class="btn btn-solid">Submit Application &rarr;</button>
+                </div>
+            </div>
+        </form>
+    </main>
+</div>
+</body>
+</html>
