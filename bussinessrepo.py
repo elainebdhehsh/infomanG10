@@ -11,7 +11,7 @@ db_config = {
     "database": "philhealth_db"
 }
 
-# Reports dictionary (unchanged)
+# Reports dictionary
 reports = {
     "Q1": {
         "title": "Member Contact Directory",
